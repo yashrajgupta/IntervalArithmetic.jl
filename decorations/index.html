@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+
+	<title>Decorations - IntervalArithmetic.jl</title>
+
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../css/highlight.css">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="..">IntervalArithmetic.jl</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="..">Package</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../usage/">Basic usage</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../multidim/">Multi-dimensional</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../rounding/">Rounding</a>
+                    </li>
+                
+                
+                
+                    <li class="active">
+                        <a href="./">Decorations</a>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="next" href="../rounding/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a rel="prev" >
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a href="https://github.com/JuliaIntervals/IntervalArithmetic.jl">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#decorations">Decorations</a></li>
+        
+            <li><a href="#initialisation">Initialisation</a></li>
+        
+            <li><a href="#action-of-functions">Action of functions</a></li>
+        
+    
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p>[I 160508 10:04:49 handlers:132] Browser Connected: http://127.0.0.1:8000/multid<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    TeX: { equationNumbers: { autoNumber: "AMS" } }
+  });
+  MathJax.Hub.Config({
+    TeX: { extensions: ["AMSmath.js", "AMSsymbols.js", "autobold.js", "autoload-all.js"] }
+  });
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$']],
+      processEscapes: true
+    }
+  });
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+</script></p>
+<h1 id="decorations">Decorations</h1>
+<p>Decorations are flags, or labels, attached to intervals to indicate the status of a given interval as the result of evaluating a function on an initial interval. The combination of an interval $X$ and a decoration $d$ is called a decorated interval.</p>
+<p>The allowed decorations and their ordering are as follows:
+<code>com</code> &gt; <code>dac</code> &gt; <code>def</code> &gt; <code>trv</code> &gt; <code>ill</code>.</p>
+<p>Suppose that a decorated interval $(X, d)$ is the result of evaluating a function $f$, or the composition of a sequence of functions, on an initial decorated interval $(X_0, d_0)$. The meaning of the resulting decoration $d$ is as follows:</p>
+<ul>
+<li>
+<p><code>com</code> ("common"): $X$ is a closed, bounded, nonempty subset of the domain of $f$; $f$ is continuous on the interval $X$; and the resulting interval $f(X)$ is bounded.</p>
+</li>
+<li>
+<p><code>dac</code> ("defined &amp; continuous"): $X$ is a nonempty subset of $\mathrm{Dom}(f)$, and $f$ is continuous on $X$.</p>
+</li>
+<li>
+<p><code>def</code> ("defined"): $X$ is a nonempty subset of $\mathrm{Dom}(f)$, i.e. $f$ is defined at each point of $X$.</p>
+</li>
+<li>
+<p><code>trv</code> ("trivial"): always true; gives no information</p>
+</li>
+<li>
+<p><code>ill</code> ("ill-formed"): Not an Interval (an error occurred), e.g. $\mathrm{Dom}(f) = \emptyset$.</p>
+</li>
+</ul>
+<p>An example will be given at the end of this section.</p>
+<h2 id="initialisation">Initialisation</h2>
+<p>The simplest way to create a <code>DecoratedInterval</code> is with the <code>@decorated</code> macro,
+which does correct rounding:</p>
+<pre><code>julia&gt; @decorated(0.1, 0.3)
+[0.0999999, 0.300001]
+</code></pre>
+
+<p>The <code>DecoratedInterval</code> constructor may also be used if necessary:</p>
+<pre><code>julia&gt; X = DecoratedInterval(3, 4)
+[3, 4]
+</code></pre>
+
+<p>By default, decorations are not displayed. The following turns on display of decorations:</p>
+<pre><code>julia&gt; setformat(decorations=true)
+
+julia&gt; X
+[3, 4]_com
+</code></pre>
+
+<p>If no decoration is explicitly specified when a <code>DecoratedInterval</code> is created, then it is initialised with a decoration according to its interval <code>X</code>:</p>
+<ul>
+<li><code>com</code>: if <code>X</code> is nonempty and bounded;</li>
+<li><code>dac</code> if <code>X</code> is unbounded;</li>
+<li><code>trv</code> if <code>X</code> is empty.</li>
+</ul>
+<p>An explicit decoration may be provided for advanced use:</p>
+<pre><code>julia&gt; DecoratedInterval(3, 4, dac)
+[3, 4]_dac
+
+julia&gt; DecoratedInterval(X, def)
+[3, 4]_def
+</code></pre>
+
+<p>Here, a new <code>DecoratedInterval</code> was created by extracting the interval from another one and appending a different decoration.</p>
+<h2 id="action-of-functions">Action of functions</h2>
+<p>A decoration is the combination of an interval together with the sequence of functions that it has passed through. Here are some examples:</p>
+<pre><code>julia&gt; X1 = @decorated(0.5, 3)
+[0.5, 3]_com
+
+julia&gt; sqrt(X1)
+[0.707106, 1.73206]_com
+</code></pre>
+
+<p>In this case, both input and output are "common" intervals, meaning that they are closed and bounded, and that the resulting function is continuous over the input interval, so that fixed-point theorems may be applied. Since <code>sqrt(X1) ⊆ X1</code>, we know that there must be a fixed point of the function inside the interval <code>X1</code> (in this case, <code>sqrt(1) == 1</code>).</p>
+<pre><code>julia&gt; X2 = DecoratedInterval(3, ∞)
+[3, ∞]_dac
+
+julia&gt; sqrt(X2)
+[1.73205, ∞]_dac
+</code></pre>
+
+<p>Since the intervals are unbounded here, the maximum decoration possible is <code>dac</code>.</p>
+<pre><code>julia&gt; X3 = @decorated(-3, 4)
+[-3, 4]_com
+
+julia&gt; sign(X3)
+[-1, 1]_def
+</code></pre>
+
+<p>The <code>sign</code> function is discontinuous at 0, but is defined everywhere on the input interval, so the decoration is <code>def</code>.</p>
+<pre><code>julia&gt; X4 = @decorated(-3.5, 4.1)
+[-3.5, 4.10001]_com
+
+julia&gt; sqrt(X4)
+[0, 2.02485]_trv
+</code></pre>
+
+<p>The negative part of <code>X</code> is discarded by the <code>sqrt</code> function, since its domain is <code>[0,∞]</code>. (This process of discarding parts of the input interval that are not in the domain is called "loose evaluation".) The fact that this occurred is, however, recorded by the resulting decoration, <code>trv</code>, indicating a loss of information: "nothing is known" about the relationship between the output interval and the input.</p>
+<p>In this case, we know why the decoration was reduced to <code>trv</code>. But if this were just a single step in a longer calculation, a resulting <code>trv</code> decoration shows only that something like this happened <em>at some step</em>. For example:</p>
+<pre><code>julia&gt; X5 = @decorated(-3, 3)
+[-3, 3]_com
+
+julia&gt; asin(sqrt(X5))
+[0, 1.5708]_trv
+
+julia&gt; X6 = @decorated(0, 3)
+[0, 3]_com
+
+julia&gt; asin(sqrt(X6))
+[0, 1.5708]_trv
+</code></pre>
+
+<p>In both cases, <code>asin(sqrt(X))</code> gives a result with a <code>trv</code> decoration, but
+we do not know at which step this happened, unless we break down the function into its constituent parts:</p>
+<pre><code>julia&gt; sqrt(X5)
+[0, 1.73206]_trv
+
+julia&gt; sqrt(X6)
+[0, 1.73206]_com
+</code></pre>
+
+<p>This shows that loose evaluation occurred in different parts of the expression in the two different cases.</p>
+<p>In general, the <code>trv</code> decoration is thus used only to signal that "something unexpected" happened during the calculation. Often this is later used to split up the original interval into pieces and reevaluate the function on each piece to refine the information that is obtained about the function.</p></div>
+            
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+                <p>Copyright &copy; 2014-2017, Luis Benet & David P. Sanders</p>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        <script src="../js/jquery-1.10.2.min.js"></script>
+        <script src="../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../js/highlight.pack.js"></script>
+        <script>var base_url = '..';</script>
+        <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+        <script src="../js/base.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            From here you can search these documents. Enter
+                            your search terms below.
+                        </p>
+                        <form role="form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                            </div>
+                        </form>
+                        <div id="mkdocs-search-results"></div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
