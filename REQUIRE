@@ -1,4 +1,5 @@
 julia 0.5
+IntervalBase
 CRlibm 0.5
 StaticArrays 0.3
 ForwardDiff 0.2
