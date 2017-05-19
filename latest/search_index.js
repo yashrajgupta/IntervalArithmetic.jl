@@ -377,10 +377,10 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "api.html#IntervalArithmetic.mid",
+    "location": "api.html#IntervalArithmetic.mid-Tuple{IntervalArithmetic.Interval{T},Any}",
     "page": "API",
     "title": "IntervalArithmetic.mid",
-    "category": "Function",
+    "category": "Method",
     "text": "mid(a::Interval, α=0.5)\n\nFind the midpoint (or, in general, an intermediate point) at a distance α along the interval a. The default is the true midpoint at α=0.5.\n\n\n\n"
 },
 
