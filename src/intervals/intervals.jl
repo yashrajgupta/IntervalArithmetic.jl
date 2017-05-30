@@ -5,7 +5,7 @@
 
 ## Interval type
 
-abstract AbstractInterval <: Real
+@compat abstract type AbstractInterval <: Real end
 
 immutable Interval{T<:Real} <: AbstractInterval
     lo :: T
@@ -50,6 +50,37 @@ Interval(x::Complex) = Interval(real(x)) + im*Interval(imag(x))
 (::Type{Interval{T}}){T}(x) = Interval(convert(T, x))
 
 (::Type{Interval{T}}){T}(x::Interval) = convert(Interval{T}, x)
+
+## FastInterval
+immutable FastInterval{T<:Real} <: AbstractInterval
+    lo :: T
+    hi :: T
+
+    function (::Type{FastInterval{T}}){T}(a::T, b::T)
+        (isnan(a) || isnan(b))  && return new{T}(NaN, NaN)  # nai
+        new{T}(a, b)
+    end
+end
+FastInterval{T<:Real}(a::T, b::T) = FastInterval{T}(a, b)
+FastInterval{T<:Real}(a::T) = FastInterval(a, a)
+FastInterval(a::Tuple) = FastInterval(a...)
+FastInterval{T<:Real, S<:Real}(a::T, b::S) =
+    FastInterval(promote(a,b)...)
+
+## Concrete constructors for FastInterval, to effectively deal only with Float64,
+# BigFloat or Rational{Integer} intervals.
+FastInterval{T<:Integer}(a::T, b::T) = FastInterval(float(a), float(b))
+FastInterval{T<:Irrational}(a::T, b::T) = FastInterval(float(a), float(b))
+
+eltype{T<:Real}(x::FastInterval{T}) = T
+
+FastInterval(x::FastInterval) = x
+FastInterval(x::Complex) = Complex(FastInterval(real(x)), FastInterval(imag(x)))
+
+(::Type{FastInterval{T}}){T}(x) = FastInterval(convert(T, x))
+
+(::Type{FastInterval{T}}){T}(x::FastInterval) = convert(FastInterval{T}, x)
+
 
 ## Include files
 include("special.jl")

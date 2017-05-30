@@ -7,6 +7,7 @@ module IntervalArithmetic
 import CRlibm
 using StaticArrays
 
+using Compat
 
 import Base:
     +, -, *, /, //, fma,
@@ -29,7 +30,7 @@ import Base:
     parse
 
 export
-    Interval, AbstractInterval,
+    Interval, FastInterval, AbstractInterval,
     @interval, @biginterval, @floatinterval, @make_interval,
     diam, radius, mid, mag, mig, hull,
     emptyinterval, ∅, ∞, isempty, isinterior, isdisjoint, ⪽,

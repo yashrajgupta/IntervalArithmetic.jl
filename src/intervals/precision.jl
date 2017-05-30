@@ -21,6 +21,11 @@ function big53(a::Interval{Float64})
         convert(Interval{BigFloat}, a)
     end
 end
+function big53(a::FastInterval{Float64})
+    setprecision(FastInterval, 53) do  # precision of Float64
+        convert(FastInterval{BigFloat}, a)
+    end
+end
 
 function big53(x::Float64)
     # BigFloat(x, 53)  # in Julia v0.6
@@ -32,6 +37,7 @@ end
 
 
 setprecision(::Type{Interval}, ::Type{Float64}) = parameters.precision_type = Float64
+setprecision(::Type{FastInterval}, ::Type{Float64}) = parameters.precision_type = Float64
 # does not change the BigFloat precision
 
 
@@ -82,5 +88,7 @@ end
 
 
 float{T}(x::Interval{T}) = convert( Interval{float(T)}, x)  # https://github.com/dpsanders/IntervalArithmetic.jl/issues/174
+float{T}(x::FastInterval{T}) = convert( FastInterval{float(T)}, x)  # https://github.com/dpsanders/IntervalArithmetic.jl/issues/174
 
 big(x::Interval) = convert(Interval{BigFloat}, x)
+big(x::FastInterval) = convert(FastInterval{BigFloat}, x)
