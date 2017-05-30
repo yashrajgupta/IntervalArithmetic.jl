@@ -44,22 +44,22 @@ function sin{T}(a::Interval{T})
     # Different cases depending on the two quadrants:
     if lo_quadrant == hi_quadrant
         a.hi - a.lo > pi_interval(T).lo && return whole_range  # in same quadrant but separated by almost 2pi
-        lo = @round(sin(a.lo), sin(a.lo)) # Interval(sin(a.lo, RoundDown), sin(a.lo, RoundUp))
-        hi = @round(sin(a.hi), sin(a.hi)) # Interval(sin(a.hi, RoundDown), sin(a.hi, RoundUp))
+        lo = Interval( @round(sin(a.lo), sin(a.lo))) # Interval(sin(a.lo, RoundDown), sin(a.lo, RoundUp))
+        hi = Interval( @round(sin(a.hi), sin(a.hi))) # Interval(sin(a.hi, RoundDown), sin(a.hi, RoundUp))
         return hull(lo, hi)
 
     elseif lo_quadrant==3 && hi_quadrant==0
-        return @round(sin(a.lo), sin(a.hi)) # Interval(sin(a.lo, RoundDown), sin(a.hi, RoundUp))
+        return Interval( @round(sin(a.lo), sin(a.hi))) # Interval(sin(a.lo, RoundDown), sin(a.hi, RoundUp))
 
     elseif lo_quadrant==1 && hi_quadrant==2
-        return @round(sin(a.hi), sin(a.lo)) # Interval(sin(a.hi, RoundDown), sin(a.lo, RoundUp))
+        return Interval( @round(sin(a.hi), sin(a.lo))) # Interval(sin(a.hi, RoundDown), sin(a.lo, RoundUp))
 
     elseif ( lo_quadrant == 0 || lo_quadrant==3 ) && ( hi_quadrant==1 || hi_quadrant==2 )
-        return @round(min(sin(a.lo), sin(a.hi)), 1)
+        return Interval( @round(min(sin(a.lo), sin(a.hi)), 1))
         # Interval(min(sin(a.lo, RoundDown), sin(a.hi, RoundDown)), one(T))
 
     elseif ( lo_quadrant == 1 || lo_quadrant==2 ) && ( hi_quadrant==3 || hi_quadrant==0 )
-        return @round(-1, max(sin(a.lo), sin(a.hi)))
+        return Interval( @round(-1, max(sin(a.lo), sin(a.hi))))
         # Interval(-one(T), max(sin(a.lo, RoundUp), sin(a.hi, RoundUp)))
 
     else #if( lo_quadrant == 0 && hi_quadrant==3 ) || ( lo_quadrant == 2 && hi_quadrant==1 )
@@ -88,21 +88,21 @@ function cos{T}(a::Interval{T})
     # Different cases depending on the two quadrants:
     if lo_quadrant == hi_quadrant # Interval limits in the same quadrant
         a.hi - a.lo > pi_interval(T).lo && return whole_range
-        lo = @round(cos(a.lo), cos(a.lo))
-        hi = @round(cos(a.hi), cos(a.hi))
+        lo = Interval( @round(cos(a.lo), cos(a.lo)))
+        hi = Interval( @round(cos(a.hi), cos(a.hi)))
         return hull(lo, hi)
 
     elseif lo_quadrant == 2 && hi_quadrant==3
-        return @round(cos(a.lo), cos(a.hi))
+        return Interval( @round(cos(a.lo), cos(a.hi)))
 
     elseif lo_quadrant == 0 && hi_quadrant==1
-        return @round(cos(a.hi), cos(a.lo))
+        return Interval( @round(cos(a.hi), cos(a.lo)))
 
     elseif ( lo_quadrant == 2 || lo_quadrant==3 ) && ( hi_quadrant==0 || hi_quadrant==1 )
-        return @round(min(cos(a.lo), cos(a.hi)), 1)
+        return Interval( @round(min(cos(a.lo), cos(a.hi)), 1))
 
     elseif ( lo_quadrant == 0 || lo_quadrant==1 ) && ( hi_quadrant==2 || hi_quadrant==3 )
-        return @round(-1, max(cos(a.lo), cos(a.hi)))
+        return Interval( @round(-1, max(cos(a.lo), cos(a.hi))))
 
     else#if ( lo_quadrant == 3 && hi_quadrant==2 ) || ( lo_quadrant == 1 && hi_quadrant==0 )
         return whole_range
@@ -136,7 +136,7 @@ function tan{T}(a::Interval{T})
     # @show a.lo, a.hi
     # @show tan(a.lo), tan(a.hi)
 
-    return @round(tan(a.lo), tan(a.hi))
+    return Interval( @round(tan(a.lo), tan(a.hi)))
 end
 
 function asin{T}(a::Interval{T})
@@ -146,7 +146,7 @@ function asin{T}(a::Interval{T})
 
     isempty(a) && return a
 
-    return @round(asin(a.lo), asin(a.hi))
+    return Interval( @round(asin(a.lo), asin(a.hi)))
 end
 
 function acos{T}(a::Interval{T})
@@ -156,14 +156,14 @@ function acos{T}(a::Interval{T})
 
     isempty(a) && return a
 
-    return @round(acos(a.hi), acos(a.lo))
+    return Interval( @round(acos(a.hi), acos(a.lo)))
 end
 
 
 function atan{T}(a::Interval{T})
     isempty(a) && return a
 
-    return @round(atan(a.lo), atan(a.hi))
+    return Interval( @round(atan(a.lo), atan(a.hi)))
 end
 
 
@@ -202,18 +202,18 @@ function atan2(y::Interval{BigFloat}, x::Interval{BigFloat})
 
         y == zero(y) && return y
         y.lo ≥ zero(T) &&
-            return @round(atan2(y.lo, x.hi), atan2(y.hi, x.lo)) # refinement lo bound
+            return Interval( @round(atan2(y.lo, x.hi), atan2(y.hi, x.lo))) # refinement lo bound
         y.hi ≤ zero(T) &&
-            return @round(atan2(y.lo, x.lo), atan2(y.hi, x.hi))
-        return @round(atan2(y.lo, x.lo), atan2(y.hi, x.lo))
+            return Interval( @round(atan2(y.lo, x.lo), atan2(y.hi, x.hi)))
+        return Interval( @round(atan2(y.lo, x.lo), atan2(y.hi, x.lo)))
 
     elseif x.hi < zero(T)
 
         y == zero(y) && return pi_interval(T)
         y.lo ≥ zero(T) &&
-            return @round(atan2(y.hi, x.hi), atan2(y.lo, x.lo))
+            return Interval( @round(atan2(y.hi, x.hi), atan2(y.lo, x.lo)))
         y.hi < zero(T) &&
-            return @round(atan2(y.hi, x.lo), atan2(y.lo, x.hi))
+            return Interval( @round(atan2(y.hi, x.lo), atan2(y.lo, x.hi)))
         return range_atan2(T)
 
     else # zero(T) ∈ x
@@ -221,21 +221,21 @@ function atan2(y::Interval{BigFloat}, x::Interval{BigFloat})
         if x.lo == zero(T)
             y == zero(y) && return y
 
-            y.lo ≥ zero(T) && return @round(atan2(y.lo, x.hi), half_range_atan2(BigFloat).hi)
+            y.lo ≥ zero(T) && return Interval( @round(atan2(y.lo, x.hi), half_range_atan2(BigFloat).hi))
 
-            y.hi ≤ zero(T) && return @round(half_range_atan2(BigFloat).lo, atan2(y.hi, x.hi))
+            y.hi ≤ zero(T) && return Interval( @round(half_range_atan2(BigFloat).lo, atan2(y.hi, x.hi)))
             return half_range_atan2(T)
 
         elseif x.hi == zero(T)
             y == zero(y) && return pi_interval(T)
-            y.lo ≥ zero(T) && return @round(half_pi(BigFloat).lo, atan2(y.lo, x.lo))
-            y.hi < zero(T) && return @round(atan2(y.hi, x.lo), -(half_pi(BigFloat).lo))
+            y.lo ≥ zero(T) && return Interval( @round(half_pi(BigFloat).lo, atan2(y.lo, x.lo)))
+            y.hi < zero(T) && return Interval( @round(atan2(y.hi, x.lo), -(half_pi(BigFloat).lo)))
             return range_atan2(T)
         else
             y.lo ≥ zero(T) &&
-                return @round(atan2(y.lo, x.hi), atan2(y.lo, x.lo))
+                return Interval( @round(atan2(y.lo, x.hi), atan2(y.lo, x.lo)))
             y.hi < zero(T) &&
-                return @round(atan2(y.hi, x.lo), atan2(y.hi, x.hi))
+                return Interval( @round(atan2(y.hi, x.lo), atan2(y.hi, x.hi)))
             return range_atan2(T)
         end
 

@@ -8,7 +8,7 @@
 Checks if the number `x` is a member of the interval `a`, treated as a set.
 Corresponds to `isMember` in the ITF-1788 Standard.
 """
-function in{T<:Real}(x::T, a::Interval)
+function in(x::Real, a::AbstractInterval)
     isinf(x) && return false
     a.lo <= x <= a.hi
 end
@@ -21,21 +21,21 @@ end
 
 Checks if all the points of the interval `a` are within the interval `b`.
 """
-function ⊆(a::Interval, b::Interval)
+function ⊆(a::AbstractInterval, b::AbstractInterval)
     isempty(a) && return true
     b.lo ≤ a.lo && a.hi ≤ b.hi
 end
 
 
 # isinterior
-function isinterior(a::Interval, b::Interval)
+function isinterior(a::AbstractInterval, b::AbstractInterval)
     isempty(a) && return true
     islessprime(b.lo, a.lo) && islessprime(a.hi, b.hi)
 end
 const ⪽ = isinterior  # \subsetdot
 
 # Disjoint:
-function isdisjoint(a::Interval, b::Interval)
+function isdisjoint(a::AbstractInterval, b::AbstractInterval)
     (isempty(a) || isempty(b)) && return true
     islessprime(b.hi, a.lo) || islessprime(a.hi, b.lo)
 end
@@ -50,13 +50,14 @@ Returns the intersection of the intervals `a` and `b`, considered as
 (extended) sets of real numbers. That is, the set that contains
 the points common in `a` and `b`.
 """
-function intersect{T}(a::Interval{T}, b::Interval{T})
-    isdisjoint(a,b) && return emptyinterval(T)
+function intersect{T<:AbstractInterval}(a::T, b::T)
+    isdisjoint(a,b) && return emptyinterval(a)
 
-    Interval(max(a.lo, b.lo), min(a.hi, b.hi))
+    T(max(a.lo, b.lo), min(a.hi, b.hi))
 end
 # Specific promotion rule for intersect:
-intersect{T,S}(a::Interval{T}, b::Interval{S}) = intersect(promote(a, b)...)
+intersect{T<:AbstractInterval,S<:AbstractInterval}(a::T, b::S) =
+    intersect(promote(a, b)...)
 
 
 ## Hull
@@ -67,9 +68,10 @@ Returns the "interval hull" of the intervals `a` and `b`, considered as
 (extended) sets of real numbers, i.e. the smallest interval that contains
 all of `a` and `b`.
 """
-hull{T}(a::Interval{T}, b::Interval{T}) = Interval{T}(min(a.lo, b.lo), max(a.hi, b.hi))
+hull{T<:AbstractInterval}(a::T, b::T) = T(min(a.lo, b.lo), max(a.hi, b.hi))
 
-hull{T,S}(a::Interval{T}, b::Interval{S}) = hull(promote(a, b)...)
+hull{T<:AbstractInterval, S<:AbstractInterval}(a::T, b::S) =
+    hull(promote(a, b)...)
 
 """
     union(a, b)
@@ -78,9 +80,10 @@ hull{T,S}(a::Interval{T}, b::Interval{S}) = hull(promote(a, b)...)
 Returns the union (convex hull) of the intervals `a` and `b`; it is equivalent
 to `hull(a,b)`.
 """
-union{T}(a::Interval{T}, b::Interval{T}) = hull(a, b)
+union{T<:AbstractInterval}(a::T, b::T) = hull(a, b)
 
-union{T,S}(a::Interval{T}, b::Interval{S}) = union(promote(a, b)...)
+union{T<:AbstractInterval, S<:AbstractInterval}(a::T, b::S) =
+    union(promote(a, b)...)
 
 
 doc"""
@@ -96,16 +99,15 @@ The array may:
 - contain a single interval, if `y` overlaps `x`
 - contain two intervals, if `y` is strictly contained within `x`.
 """
-function setdiff(x::Interval, y::Interval)
+function setdiff{T<:AbstractInterval}(x::T, y::T)
     intersection = x ∩ y
 
     isempty(intersection) && return [x]
     intersection == x && return typeof(x)[]  # x is subset of y; setdiff is empty
 
-    x.lo == intersection.lo && return [Interval(intersection.hi, x.hi)]
-    x.hi == intersection.hi && return [Interval(x.lo, intersection.lo)]
+    x.lo == intersection.lo && return [T(intersection.hi, x.hi)]
+    x.hi == intersection.hi && return [T(x.lo, intersection.lo)]
 
-    return [Interval(x.lo, y.lo),
-            Interval(y.hi, x.hi)]
+    return [T(x.lo, y.lo), T(y.hi, x.hi)]
 
 end

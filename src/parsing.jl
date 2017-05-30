@@ -89,3 +89,54 @@ function parse{T}(::Type{Interval{T}}, s::AbstractString)
     return interval
 
 end
+function parse{T}(::Type{FastInterval{T}}, s::AbstractString)
+    if !(contains(s, "["))  # string like "3.1"
+
+        m = match(r"(.*)±(.*)", s)
+        if m != nothing
+            a = parse(T, strip(m.captures[1]))
+            b = parse(T, strip(m.captures[2]))
+
+            return a ± b
+        end
+
+        expr = parse(s)
+
+        # after removing support for Julia 0.4, can simplify
+        # make_interval to just accept two expressions
+
+        val = make_fastinterval(T, expr, [expr])   # use tryparse?
+        return eval(val)
+    end
+
+    # match string of form [a, b]_dec:
+    m = match(r"\[(.*),(.*)\]", s)
+
+    if m != nothing  # matched
+        lo, hi = m.captures
+
+    else
+
+        m = match(r"\[(.*)\]", s)  # string like "[1]"
+
+        if m == nothing
+            throw(ArgumentError("Unable to process string $s as interval"))
+        end
+
+        if m.captures[1] == "Empty"
+            return emptyinterval(FastInterval{T})
+        end
+
+        lo = m.captures[1]
+        hi = lo
+
+    end
+
+    expr1 = parse(lo)
+    expr2 = parse(hi)
+
+    interval = eval(make_fastinterval(T, expr1, [expr2]))
+
+    return interval
+
+end
