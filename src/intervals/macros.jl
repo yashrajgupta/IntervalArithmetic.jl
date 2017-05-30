@@ -30,6 +30,9 @@ macro biginterval(expr1, expr2...)
     make_interval(BigFloat, expr1, expr2)
 end
 
+macro fastinterval(expr1, expr2...)
+    make_fastinterval(:(parameters.precision_type), expr1, expr2)
+end
 
 
 doc"""`transform` transforms a string by applying the function `f` and type
@@ -80,7 +83,7 @@ by calling `transform`."""
 
 function make_interval(T, expr1, expr2)
     # @show expr1, expr2
-    
+
     expr1 = transform(expr1, :convert, :(Interval{$T}))
 
     if isempty(expr2)  # only one argument
@@ -90,4 +93,18 @@ function make_interval(T, expr1, expr2)
     expr2 = transform(expr2[1], :convert, :(Interval{$T}))
 
     :(Interval(($expr1).lo, ($expr2).hi))
+end
+
+function make_fastinterval(T, expr1, expr2)
+    # @show expr1, expr2
+
+    expr1 = transform(expr1, :convert, :(FastInterval{$T}))
+
+    if isempty(expr2)  # only one argument
+        return :(FastInterval($expr1))
+    end
+
+    expr2 = transform(expr2[1], :convert, :(FastInterval{$T}))
+
+    :(FastInterval(($expr1).lo, ($expr2).hi))
 end

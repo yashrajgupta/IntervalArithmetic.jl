@@ -44,7 +44,7 @@ function convert{T<:AbstractFloat, S<:Real}(::Type{Interval{T}}, x::S)
     # use @round_up and @round_down here?
 end
 convert{T<:AbstractFloat, S<:Real}(::Type{FastInterval{T}}, x::S) =
-    FastInterval{T}( T(x), T(x) )
+    FastInterval{T}( T(x, RoundDown), T(x, RoundUp) )
 
 function convert{T<:AbstractFloat}(::Type{Interval{T}}, x::Float64)
     II = convert(Interval{T}, rationalize(x))
@@ -59,7 +59,8 @@ function convert{T<:AbstractFloat}(::Type{FastInterval{T}}, x::Float64)
     II = convert(FastInterval{T}, rationalize(x))
     # This prevents that rationalize(x) returns a zero when x is very small
     if x != zero(x) && II == zero(FastInterval{T})
-        return convert(FastInterval{T}, string(x))
+        return FastInterval(parse(T, string(x), RoundDown),
+                            parse(T, string(x), RoundUp))
     end
     II
 end
@@ -74,7 +75,7 @@ function convert{T<:AbstractFloat}(::Type{Interval{T}}, x::Interval)
     Interval{T}( T(x.lo, RoundDown), T(x.hi, RoundUp) )
 end
 convert{T<:AbstractFloat}(::Type{FastInterval{T}}, x::FastInterval) =
-    FastInterval{T}( T(x.lo), T(x.hi) )
+    FastInterval{T}( T(x.lo, RoundDown), T(x.hi, RoundUp) )
 
 
 # Complex numbers:

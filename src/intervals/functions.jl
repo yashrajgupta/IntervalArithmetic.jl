@@ -30,17 +30,17 @@ function ^(a::Interval{BigFloat}, n::Integer)
     if isodd(n) # odd power
         isentire(a) && return a
         if n > 0
-            a.lo == 0 && return @round(0, a.hi^n)
-            a.hi == 0 && return @round(a.lo^n, 0)
-            return @round(a.lo^n, a.hi^n)
+            a.lo == 0 && return Interval(@round(0, a.hi^n))
+            a.hi == 0 && return Interval(@round(a.lo^n, 0))
+            return Interval(@round(a.lo^n, a.hi^n))
         else
             if a.lo ≥ 0
-                a.lo == 0 && return @round(a.hi^n, Inf)
-                return @round(a.hi^n, a.lo^n)
+                a.lo == 0 && return Interval(@round(a.hi^n, Inf))
+                return Interval(@round(a.hi^n, a.lo^n))
 
             elseif a.hi ≤ 0
-                a.hi == 0 && return @round(-Inf, a.lo^n)
-                return @round(a.hi^n, a.lo^n)
+                a.hi == 0 && return Interval(@round(-Inf, a.lo^n))
+                return Interval(@round(a.hi^n, a.lo^n))
             else
                 return entireinterval(a)
             end
@@ -49,20 +49,20 @@ function ^(a::Interval{BigFloat}, n::Integer)
     else # even power
         if n > 0
             if a.lo ≥ 0
-                return @round(a.lo^n, a.hi^n)
+                return Interval(@round(a.lo^n, a.hi^n))
             elseif a.hi ≤ 0
-                return @round(a.hi^n, a.lo^n)
+                return Interval(@round(a.hi^n, a.lo^n))
             else
-                return @round(mig(a)^n, mag(a)^n)
+                return Interval(@round(mig(a)^n, mag(a)^n))
             end
 
         else
             if a.lo ≥ 0
-                return @round(a.hi^n, a.lo^n)
+                return Interval(@round(a.hi^n, a.lo^n))
             elseif a.hi ≤ 0
-                return @round(a.lo^n, a.hi^n)
+                return Interval(@round(a.lo^n, a.hi^n))
             else
-                return @round(mag(a)^n, mig(a)^n)
+                return Interval(@round(mag(a)^n, mig(a)^n))
             end
         end
     end
@@ -79,17 +79,17 @@ function ^(a::FastInterval{BigFloat}, n::Integer)
     if isodd(n) # odd power
         isentire(a) && return a
         if n > 0
-            a.lo == 0 && return FastInterval(0, a.hi^n)
-            a.hi == 0 && return FastInterval(a.lo^n, 0)
-            return FastInterval(a.lo^n, a.hi^n)
+            a.lo == 0 && return FastInterval( @round(0, a.hi^n) )
+            a.hi == 0 && return FastInterval( @round(a.lo^n, 0) )
+            return FastInterval( @round(a.lo^n, a.hi^n) )
         else
             if a.lo ≥ 0
-                a.lo == 0 && return FastInterval(a.hi^n, Inf)
-                return FastInterval(a.hi^n, a.lo^n)
+                a.lo == 0 && return FastInterval( @round(a.hi^n, Inf) )
+                return FastInterval( @round(a.hi^n, a.lo^n) )
 
             elseif a.hi ≤ 0
-                a.hi == 0 && return FastInterval(-Inf, a.lo^n)
-                return FastInterval(a.hi^n, a.lo^n)
+                a.hi == 0 && return FastInterval( @round(-Inf, a.lo^n) )
+                return FastInterval( @round(a.hi^n, a.lo^n) )
             else
                 return entireinterval(a)
             end
@@ -98,26 +98,26 @@ function ^(a::FastInterval{BigFloat}, n::Integer)
     else # even power
         if n > 0
             if a.lo ≥ 0
-                return FastInterval(a.lo^n, a.hi^n)
+                return FastInterval( @round(a.lo^n, a.hi^n) )
             elseif a.hi ≤ 0
-                return FastInterval(a.hi^n, a.lo^n)
+                return FastInterval( @round(a.hi^n, a.lo^n) )
             else
-                return FastInterval(mig(a)^n, mag(a)^n)
+                return FastInterval( @round(mig(a)^n, mag(a)^n) )
             end
 
         else
             if a.lo ≥ 0
-                return FastInterval(a.hi^n, a.lo^n)
+                return FastInterval( @round(a.hi^n, a.lo^n) )
             elseif a.hi ≤ 0
-                return FastInterval(a.lo^n, a.hi^n)
+                return FastInterval( @round(a.lo^n, a.hi^n) )
             else
-                return FastInterval(mag(a)^n, mig(a)^n)
+                return FastInterval( @round(mag(a)^n, mig(a)^n) )
             end
         end
     end
 end
 
-function sqr{T<:Real}(a::Interval{T})
+function sqr(a::AbstractInterval)
     return a^2
     # isempty(a) && return a
     # if a.lo ≥ zero(T)
@@ -128,9 +128,6 @@ function sqr{T<:Real}(a::Interval{T})
     # end
     #
     # return @round(mig(a)^2, mag(a)^2)
-end
-function sqr{T<:Real}(a::FastInterval{T})
-    return a^2
 end
 ^(a::Interval{BigFloat}, x::AbstractFloat) = a^big(x)
 ^(a::FastInterval{BigFloat}, x::AbstractFloat) = a^big(x)
@@ -154,10 +151,10 @@ function ^(a::Interval{BigFloat}, x::BigFloat)
 
     xx = convert(Interval{BigFloat}, x)
 
-    lo = @round(a.lo^xx.lo, a.lo^xx.lo)
-    lo1 = @round(a.lo^xx.hi, a.lo^xx.hi)
-    hi = @round(a.hi^xx.lo, a.hi^xx.lo)
-    hi1 = @round(a.hi^xx.hi, a.hi^xx.hi)
+    lo = Interval(@round(a.lo^xx.lo, a.lo^xx.lo))
+    lo1 = Interval(@round(a.lo^xx.hi, a.lo^xx.hi))
+    hi = Interval(@round(a.hi^xx.lo, a.hi^xx.lo))
+    hi1 = Interval(@round(a.hi^xx.hi, a.hi^xx.hi))
 
     lo = hull(lo, lo1)
     hi = hull(hi, hi1)
@@ -182,10 +179,10 @@ function ^(a::FastInterval{BigFloat}, x::BigFloat)
 
     xx = convert(FastInterval{BigFloat}, x)
 
-    lo = FastInterval(a.lo^xx.lo, a.lo^xx.lo)
-    lo1 = FastInterval(a.lo^xx.hi, a.lo^xx.hi)
-    hi = FastInterval(a.hi^xx.lo, a.hi^xx.lo)
-    hi1 = FastInterval(a.hi^xx.hi, a.hi^xx.hi)
+    lo = FastInterval( @round(a.lo^xx.lo, a.lo^xx.lo) )
+    lo1 = FastInterval( @round(a.lo^xx.hi, a.lo^xx.hi) )
+    hi = FastInterval( @round(a.hi^xx.lo, a.hi^xx.lo) )
+    hi1 = FastInterval( @round(a.hi^xx.hi, a.hi^xx.hi) )
 
     lo = hull(lo, lo1)
     hi = hull(hi, hi1)
@@ -291,7 +288,7 @@ function sqrt{T}(a::Interval{T})
 
     isempty(a) && return a
 
-    @round(sqrt(a.lo), sqrt(a.hi))  # `sqrt` is correctly-rounded
+    Interval(@round(sqrt(a.lo), sqrt(a.hi)))  # `sqrt` is correctly-rounded
 end
 function sqrt{T}(a::FastInterval{T})
     domain = FastInterval{T}(0, Inf)
@@ -299,7 +296,7 @@ function sqrt{T}(a::FastInterval{T})
 
     isempty(a) && return a
 
-    FastInterval(sqrt(a.lo), sqrt(a.hi))  # `sqrt` is correctly-rounded
+    FastInterval( @round(sqrt(a.lo), sqrt(a.hi)))  # `sqrt` is correctly-rounded
 end
 
 doc"""
@@ -310,21 +307,40 @@ A faster implementation of `x^n` using `power_by_squaring`.
 than that calculated by `x^n`, but is guaranteed to be a correct
 enclosure when using multiplication with correct rounding.
 """
-function pow{T<:AbstractInterval}(x::T, n::Integer)  # fast integer power
+function pow(x::Interval, n::Integer)  # fast integer power
 
     isempty(x) && return x
 
-    if iseven(n) && zero(T) ∈ x
+    if iseven(n) && zero(Interval) ∈ x
 
         return hull(zero(x),
-                    hull(Base.power_by_squaring(T(mig(x)), n),
-                        Base.power_by_squaring(T(mag(x)), n))
+                    hull(Base.power_by_squaring(Interval(mig(x)), n),
+                        Base.power_by_squaring(Interval(mag(x)), n))
             )
 
     else
 
-      return hull( Base.power_by_squaring(T(x.lo), n),
-                    Base.power_by_squaring(T(x.hi), n) )
+      return hull( Base.power_by_squaring(Interval(x.lo), n),
+                    Base.power_by_squaring(Interval(x.hi), n) )
+
+    end
+
+end
+function pow(x::FastInterval, n::Integer)  # fast integer power
+
+    isempty(x) && return x
+
+    if iseven(n) && zero(FastInterval) ∈ x
+
+        return hull(zero(x),
+                    hull(Base.power_by_squaring(FastInterval(mig(x)), n),
+                        Base.power_by_squaring(FastInterval(mag(x)), n))
+            )
+
+    else
+
+      return hull( Base.power_by_squaring(FastInterval(x.lo), n),
+                    Base.power_by_squaring(FastInterval(x.hi), n) )
 
     end
 
@@ -333,15 +349,11 @@ end
 
 
 
-for f in (:exp, :expm1)
+for f in (:exp, :expm1), T in (:Interval, :FastInterval)
     @eval begin
-        function ($f){T}(a::Interval{T})
+        function ($f)(a::$T)
             isempty(a) && return a
-            @round( ($f)(a.lo), ($f)(a.hi) )
-        end
-        function ($f){T}(a::FastInterval{T})
-            isempty(a) && return a
-            FastInterval( ($f)(a.lo), ($f)(a.hi) )
+            $T(@round(($f)(a.lo), ($f)(a.hi)))
         end
     end
 end
@@ -359,11 +371,11 @@ for f in (:exp2, :exp10)
 
     @eval function ($f)(a::Interval{BigFloat})
             isempty(a) && return a
-            @round( ($f)(a.lo), ($f)(a.hi) )
+            Interval(@round(($f)(a.lo), ($f)(a.hi) ))
         end
     @eval function ($f)(a::FastInterval{BigFloat})
             isempty(a) && return a
-            FastInterval( ($f)(a.lo), ($f)(a.hi) )
+            FastInterval( @round(($f)(a.lo), ($f)(a.hi) ) )
         end
 end
 
@@ -376,7 +388,7 @@ for f in (:log, :log2, :log10, :log1p)
 
             (isempty(a) || a.hi ≤ zero(T)) && return emptyinterval(a)
 
-            @round( ($f)(a.lo), ($f)(a.hi) )
+            Interval(@round(($f)(a.lo), ($f)(a.hi) ))
 
         end
     @eval function ($f){T}(a::FastInterval{T})
@@ -385,7 +397,7 @@ for f in (:log, :log2, :log10, :log1p)
 
             (isempty(a) || a.hi ≤ zero(T)) && return emptyinterval(a)
 
-            FastInterval( ($f)(a.lo), ($f)(a.hi) )
+            FastInterval( @round(($f)(a.lo), ($f)(a.hi) ) )
 
         end
 

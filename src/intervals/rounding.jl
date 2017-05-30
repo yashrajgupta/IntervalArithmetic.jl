@@ -34,6 +34,7 @@ immutable IntervalRounding{T} end
 
     # zero:
     zero{T<:AbstractFloat}(a::Interval{T}, ::RoundingMode) = zero(T)
+    zero{T<:AbstractFloat}(a::FastInterval{T}, ::RoundingMode) = zero(T)
     zero{T<:AbstractFloat}(::Type{T}, ::RoundingMode) = zero(T)
 
     convert(::Type{BigFloat}, x, rounding_mode::RoundingMode) =
@@ -192,6 +193,8 @@ function setrounding(::Type{Interval}, rounding_type::Symbol)
 
     current_rounding_type[] = rounding_type
 end
+setrounding(::Type{FastInterval}, rounding_type::Symbol) =
+    setrounding(Interval, rounding_type)
 
 # default: correct rounding
 const current_rounding_type = Symbol[:undefined]

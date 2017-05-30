@@ -67,43 +67,43 @@ one{T<:Real}(::Type{FastInterval{T}}) = FastInterval(one(T))
 -{T<:AbstractInterval}(a::T) = T(-a.hi, -a.lo)
 
 function +{T<:Real}(a::Interval{T}, b::Interval{T})
-    (isempty(a) || isempty(b)) && return emptyinterval(T)
-    @round(a.lo + b.lo, a.hi + b.hi)
+    (isempty(a) || isempty(b)) && return emptyinterval(a)
+    Interval(@round(a.lo + b.lo, a.hi + b.hi))
 end
 function +{T<:Real}(a::FastInterval{T}, b::FastInterval{T})
     (isempty(a) || isempty(b)) && return emptyinterval(a)
-    FastInterval(a.lo + b.lo, a.hi + b.hi)
+    FastInterval(@round(a.lo + b.lo, a.hi + b.hi))
 end
 
 function -{T<:Real}(a::Interval{T}, b::Interval{T})
-    (isempty(a) || isempty(b)) && return emptyinterval(T)
-    @round(a.lo - b.hi, a.hi - b.lo)
+    (isempty(a) || isempty(b)) && return emptyinterval(a)
+    Interval(@round(a.lo - b.hi, a.hi - b.lo))
 end
 function -{T<:Real}(a::FastInterval{T}, b::FastInterval{T})
     (isempty(a) || isempty(b)) && return emptyinterval(a)
-    FastInterval(a.lo - b.hi, a.hi - b.lo)
+    FastInterval(@round(a.lo - b.hi, a.hi - b.lo))
 end
 
 
 ## Multiplication
 
 function *{T<:Real}(a::Interval{T}, b::Interval{T})
-    (isempty(a) || isempty(b)) && return emptyinterval(T)
+    (isempty(a) || isempty(b)) && return emptyinterval(a)
 
     (a == zero(a) || b == zero(b)) && return zero(a)
 
     if b.lo >= zero(T)
-        a.lo >= zero(T) && return @round(a.lo*b.lo, a.hi*b.hi)
-        a.hi <= zero(T) && return @round(a.lo*b.hi, a.hi*b.lo)
-        return @round(a.lo*b.hi, a.hi*b.hi)   # zero(T) ∈ a
+        a.lo >= zero(T) && return Interval(@round(a.lo*b.lo, a.hi*b.hi))
+        a.hi <= zero(T) && return Interval(@round(a.lo*b.hi, a.hi*b.lo))
+        return Interval(@round(a.lo*b.hi, a.hi*b.hi))   # zero(T) ∈ a
     elseif b.hi <= zero(T)
-        a.lo >= zero(T) && return @round(a.hi*b.lo, a.lo*b.hi)
-        a.hi <= zero(T) && return @round(a.hi*b.hi, a.lo*b.lo)
-        return @round(a.hi*b.lo, a.lo*b.lo)   # zero(T) ∈ a
+        a.lo >= zero(T) && return Interval(@round(a.hi*b.lo, a.lo*b.hi))
+        a.hi <= zero(T) && return Interval(@round(a.hi*b.hi, a.lo*b.lo))
+        return Interval(@round(a.hi*b.lo, a.lo*b.lo))   # zero(T) ∈ a
     else
-        a.lo > zero(T) && return @round(a.hi*b.lo, a.hi*b.hi)
-        a.hi < zero(T) && return @round(a.lo*b.hi, a.lo*b.lo)
-        return @round(min(a.lo*b.hi, a.hi*b.lo), max(a.lo*b.lo, a.hi*b.hi))
+        a.lo > zero(T) && return Interval(@round(a.hi*b.lo, a.hi*b.hi))
+        a.hi < zero(T) && return Interval(@round(a.lo*b.hi, a.lo*b.lo))
+        return Interval(@round(min(a.lo*b.hi, a.hi*b.lo), max(a.lo*b.lo, a.hi*b.hi)))
     end
 end
 function *{T<:Real}(a::FastInterval{T}, b::FastInterval{T})
@@ -112,17 +112,17 @@ function *{T<:Real}(a::FastInterval{T}, b::FastInterval{T})
     (a == zero(a) || b == zero(b)) && return zero(a)
 
     if b.lo >= zero(T)
-        a.lo >= zero(T) && return FastInterval(a.lo*b.lo, a.hi*b.hi)
-        a.hi <= zero(T) && return FastInterval(a.lo*b.hi, a.hi*b.lo)
-        return FastInterval(a.lo*b.hi, a.hi*b.hi)   # zero(T) ∈ a
+        a.lo >= zero(T) && return FastInterval(@round(a.lo*b.lo, a.hi*b.hi))
+        a.hi <= zero(T) && return FastInterval(@round(a.lo*b.hi, a.hi*b.lo))
+        return FastInterval(@round(a.lo*b.hi, a.hi*b.hi))   # zero(T) ∈ a
     elseif b.hi <= zero(T)
-        a.lo >= zero(T) && return FastInterval(a.hi*b.lo, a.lo*b.hi)
-        a.hi <= zero(T) && return FastInterval(a.hi*b.hi, a.lo*b.lo)
-        return FastInterval(a.hi*b.lo, a.lo*b.lo)   # zero(T) ∈ a
+        a.lo >= zero(T) && return FastInterval(@round(a.hi*b.lo, a.lo*b.hi))
+        a.hi <= zero(T) && return FastInterval(@round(a.hi*b.hi, a.lo*b.lo))
+        return FastInterval(@round(a.hi*b.lo, a.lo*b.lo))   # zero(T) ∈ a
     else
-        a.lo > zero(T) && return FastInterval(a.hi*b.lo, a.hi*b.hi)
-        a.hi < zero(T) && return FastInterval(a.lo*b.hi, a.lo*b.lo)
-        return FastInterval(min(a.lo*b.hi, a.hi*b.lo), max(a.lo*b.lo, a.hi*b.hi))
+        a.lo > zero(T) && return FastInterval(@round(a.hi*b.lo, a.hi*b.hi))
+        a.hi < zero(T) && return FastInterval(@round(a.lo*b.hi, a.lo*b.lo))
+        return FastInterval(@round(min(a.lo*b.hi, a.hi*b.lo), max(a.lo*b.lo, a.hi*b.hi)))
     end
 end
 
@@ -133,44 +133,43 @@ function inv{T<:Real}(a::Interval{T})
     isempty(a) && return emptyinterval(a)
 
     if zero(T) ∈ a
-        a.lo < zero(T) == a.hi && return @round(-Inf, inv(a.lo))
-        a.lo == zero(T) < a.hi && return @round(inv(a.hi), Inf)
-        a.lo < zero(T) < a.hi && return entireinterval(T)
-        a == zero(a) && return emptyinterval(T)
+        a.lo < zero(T) == a.hi && return Interval(@round(-Inf, inv(a.lo)))
+        a.lo == zero(T) < a.hi && return Interval(@round(inv(a.hi), Inf))
+        a.lo < zero(T) < a.hi && return entireinterval(a)
+        a == zero(a) && return emptyinterval(a)
     end
 
-    @round(inv(a.hi), inv(a.lo))
+    Interval(@round(inv(a.hi), inv(a.lo)))
 end
 function inv{T<:Real}(a::FastInterval{T})
     isempty(a) && return emptyinterval(a)
 
     if zero(T) ∈ a
-        a.lo < zero(T) == a.hi && return FastInterval(-Inf, inv(a.lo))
-        a.lo == zero(T) < a.hi && return FastInterval(inv(a.hi), Inf)
+        a.lo < zero(T) == a.hi && return FastInterval(@round(-Inf, inv(a.lo)))
+        a.lo == zero(T) < a.hi && return FastInterval(@round(inv(a.hi), Inf))
         a.lo < zero(T) < a.hi && return entireinterval(a)
         a == zero(a) && return emptyinterval(a)
     end
 
-    FastInterval(inv(a.hi), inv(a.lo))
+    FastInterval(@round(inv(a.hi), inv(a.lo)))
 end
 
 function /{T<:Real}(a::Interval{T}, b::Interval{T})
-
     S = typeof(a.lo / b.lo)
-    (isempty(a) || isempty(b)) && return emptyinterval(S)
-    b == zero(b) && return emptyinterval(S)
+    (isempty(a) || isempty(b)) && return emptyinterval(Interval{S})
+    b == zero(b) && return emptyinterval(Interval{S})
 
     if b.lo > zero(T) # b strictly positive
 
-        a.lo >= zero(T) && return @round(a.lo/b.hi, a.hi/b.lo)
-        a.hi <= zero(T) && return @round(a.lo/b.lo, a.hi/b.hi)
-        return @round(a.lo/b.lo, a.hi/b.lo)  # zero(T) ∈ a
+        a.lo >= zero(T) && return Interval(@round(a.lo/b.hi, a.hi/b.lo))
+        a.hi <= zero(T) && return Interval(@round(a.lo/b.lo, a.hi/b.hi))
+        return Interval(@round(a.lo/b.lo, a.hi/b.lo))  # zero(T) ∈ a
 
     elseif b.hi < zero(T) # b strictly negative
 
-        a.lo >= zero(T) && return @round(a.hi/b.hi, a.lo/b.lo)
-        a.hi <= zero(T) && return @round(a.hi/b.lo, a.lo/b.hi)
-        return @round(a.hi/b.hi, a.lo/b.hi)  # zero(T) ∈ a
+        a.lo >= zero(T) && return Interval(@round(a.hi/b.hi, a.lo/b.lo))
+        a.hi <= zero(T) && return Interval(@round(a.hi/b.lo, a.lo/b.hi))
+        return Interval(@round(a.hi/b.hi, a.lo/b.hi))  # zero(T) ∈ a
 
     else   # b contains zero, but is not zero(b)
 
@@ -178,40 +177,39 @@ function /{T<:Real}(a::Interval{T}, b::Interval{T})
 
         if b.lo == zero(T)
 
-            a.lo >= zero(T) && return @round(a.lo/b.hi, Inf)
-            a.hi <= zero(T) && return @round(-Inf, a.hi/b.hi)
-            return entireinterval(S)
+            a.lo >= zero(T) && return Interval(@round(a.lo/b.hi, Inf))
+            a.hi <= zero(T) && return Interval(@round(-Inf, a.hi/b.hi))
+            return entireinterval(Interval{S})
 
         elseif b.hi == zero(T)
 
-            a.lo >= zero(T) && return @round(-Inf, a.lo/b.lo)
-            a.hi <= zero(T) && return @round(a.hi/b.lo, Inf)
-            return entireinterval(S)
+            a.lo >= zero(T) && return Interval(@round(-Inf, a.lo/b.lo))
+            a.hi <= zero(T) && return Interval(@round(a.hi/b.lo, Inf))
+            return entireinterval(Interval{S})
 
         else
 
-            return entireinterval(S)
+            return entireinterval(Interval{S})
 
         end
     end
 end
 function /{T<:Real}(a::FastInterval{T}, b::FastInterval{T})
-
     S = typeof(a.lo / b.lo)
     (isempty(a) || isempty(b)) && return emptyinterval(FastInterval{S})
     b == zero(b) && return emptyinterval(FastInterval{S})
 
     if b.lo > zero(T) # b strictly positive
 
-        a.lo >= zero(T) && return FastInterval(a.lo/b.hi, a.hi/b.lo)
-        a.hi <= zero(T) && return FastInterval(a.lo/b.lo, a.hi/b.hi)
-        return FastInterval(a.lo/b.lo, a.hi/b.lo)  # zero(T) ∈ a
+        a.lo >= zero(T) && return FastInterval(@round(a.lo/b.hi, a.hi/b.lo))
+        a.hi <= zero(T) && return FastInterval(@round(a.lo/b.lo, a.hi/b.hi))
+        return FastInterval(@round(a.lo/b.lo, a.hi/b.lo))  # zero(T) ∈ a
 
     elseif b.hi < zero(T) # b strictly negative
 
-        a.lo >= zero(T) && return FastInterval(a.hi/b.hi, a.lo/b.lo)
-        a.hi <= zero(T) && return FastInterval(a.hi/b.lo, a.lo/b.hi)
-        return FastInterval(a.hi/b.hi, a.lo/b.hi)  # zero(T) ∈ a
+        a.lo >= zero(T) && return FastInterval(@round(a.hi/b.hi, a.lo/b.lo))
+        a.hi <= zero(T) && return FastInterval(@round(a.hi/b.lo, a.lo/b.hi))
+        return FastInterval(@round(a.hi/b.hi, a.lo/b.hi))  # zero(T) ∈ a
 
     else   # b contains zero, but is not zero(b)
 
@@ -219,14 +217,14 @@ function /{T<:Real}(a::FastInterval{T}, b::FastInterval{T})
 
         if b.lo == zero(T)
 
-            a.lo >= zero(T) && return FastInterval(a.lo/b.hi, Inf)
-            a.hi <= zero(T) && return FastInterval(-Inf, a.hi/b.hi)
+            a.lo >= zero(T) && return FastInterval(@round(a.lo/b.hi, Inf))
+            a.hi <= zero(T) && return FastInterval(@round(-Inf, a.hi/b.hi))
             return entireinterval(FastInterval{S})
 
         elseif b.hi == zero(T)
 
-            a.lo >= zero(T) && return FastInterval(-Inf, a.lo/b.lo)
-            a.hi <= zero(T) && return FastInterval(a.hi/b.lo, Inf)
+            a.lo >= zero(T) && return FastInterval(@round(-Inf, a.lo/b.lo))
+            a.hi <= zero(T) && return FastInterval(@round(a.hi/b.lo, Inf))
             return entireinterval(FastInterval{S})
 
         else
@@ -303,17 +301,21 @@ function fma{T}(a::FastInterval{T}, b::FastInterval{T}, c::FastInterval{T})
 
     end
 
-    lo1 = fma(a.lo, b.lo, c.lo)
-    lo2 = fma(a.lo, b.hi, c.lo)
-    lo3 = fma(a.hi, b.lo, c.lo)
-    lo4 = fma(a.hi, b.hi, c.lo)
-    lo = min_ignore_nans(lo1, lo2, lo3, lo4)
+    lo = setrounding(T, RoundDown) do
+        lo1 = fma(a.lo, b.lo, c.lo)
+        lo2 = fma(a.lo, b.hi, c.lo)
+        lo3 = fma(a.hi, b.lo, c.lo)
+        lo4 = fma(a.hi, b.hi, c.lo)
+        min_ignore_nans(lo1, lo2, lo3, lo4)
+    end
 
-    hi1 = fma(a.lo, b.lo, c.hi)
-    hi2 = fma(a.lo, b.hi, c.hi)
-    hi3 = fma(a.hi, b.lo, c.hi)
-    hi4 = fma(a.hi, b.hi, c.hi)
-    hi = max_ignore_nans(hi1, hi2, hi3, hi4)
+    hi = setrounding(T, RoundUp) do
+        hi1 = fma(a.lo, b.lo, c.hi)
+        hi2 = fma(a.lo, b.hi, c.hi)
+        hi3 = fma(a.hi, b.lo, c.hi)
+        hi4 = fma(a.hi, b.hi, c.hi)
+        max_ignore_nans(hi1, hi2, hi3, hi4)
+    end
 
     FastInterval(lo, hi)
 end
@@ -329,18 +331,13 @@ function mag(a::AbstractInterval)
     max( abs(a.lo), abs(a.hi) )
 end
 
-function mig{T<:Real}(a::Interval{T})
+function mig(a::AbstractInterval)
+    T = eltype(a)
     isempty(a) && return convert(T, NaN)
     zero(a.lo) ∈ a && return zero(a.lo)
     r1, r2 = setrounding(T, RoundDown) do
         abs(a.lo), abs(a.hi)
     end
-    min( r1, r2 )
-end
-function mig{T<:Real}(a::FastInterval{T})
-    isempty(a) && return convert(T, NaN)
-    zero(a.lo) ∈ a && return zero(a.lo)
-    r1, r2 = abs(a.lo), abs(a.hi)
     min( r1, r2 )
 end
 
@@ -468,15 +465,11 @@ doc"""
 
 Return the diameter (length) of the `Interval` `a`.
 """
-function diam{T<:Real}(a::Interval{T})
+function diam(a::AbstractInterval)
+    T = eltype(a)
     isempty(a) && return convert(T, NaN)
 
     @round_up(a.hi - a.lo) # cf page 64 of IEEE1788
-end
-function diam{T<:Real}(a::FastInterval{T})
-    isempty(a) && return convert(T, NaN)
-
-    a.hi - a.lo
 end
 
 doc"""
@@ -501,11 +494,11 @@ Return the unique interval `c` such that `b+c=a`.
 function cancelminus(a::Interval, b::Interval)
     T = promote_type(eltype(a), eltype(b))
 
-    (isempty(a) && (isempty(b) || !isunbounded(b))) && return emptyinterval(T)
+    (isempty(a) && (isempty(b) || !isunbounded(b))) && return emptyinterval(Interval{T})
 
-    (isunbounded(a) || isunbounded(b) || isempty(b)) && return entireinterval(T)
+    (isunbounded(a) || isunbounded(b) || isempty(b)) && return entireinterval(Interval{T})
 
-    a.lo - b.lo > a.hi - b.hi && return entireinterval(T)
+    a.lo - b.lo > a.hi - b.hi && return entireinterval(Interval{T})
 
     # The following is needed to avoid finite precision problems
     ans = false
@@ -515,9 +508,9 @@ function cancelminus(a::Interval, b::Interval)
             diam(@biginterval(a)) < diam(@biginterval(b))
         end
     end
-    ans && return entireinterval(T)
+    ans && return entireinterval(Interval{T})
 
-    @round(a.lo - b.lo, a.hi - b.hi)
+    Interval(@round(a.lo - b.lo, a.hi - b.hi))
 end
 function cancelminus(a::FastInterval, b::FastInterval)
     T = promote_type(eltype(a), eltype(b))
@@ -538,7 +531,7 @@ function cancelminus(a::FastInterval, b::FastInterval)
     end
     ans && return entireinterval(FastInterval{T})
 
-    FastInterval(a.lo - b.lo, a.hi - b.hi)
+    FastInterval(@round(a.lo - b.lo, a.hi - b.hi))
 end
 
 """
