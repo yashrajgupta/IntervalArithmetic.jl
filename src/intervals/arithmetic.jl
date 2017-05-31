@@ -502,19 +502,25 @@ function cancelminus(a::Interval, b::Interval)
 
     (isunbounded(a) || isunbounded(b) || isempty(b)) && return entireinterval(Interval{T})
 
-    a.lo - b.lo > a.hi - b.hi && return entireinterval(Interval{T})
+    diam(a) < diam(b) && return entireinterval(Interval{T})
 
-    # The following is needed to avoid finite precision problems
-    ans = false
-    if diam(a) == diam(b)
-        prec = T == Float64 ? 128 : 128+precision(BigFloat)
-        ans = setprecision(prec) do
-            diam(@biginterval(a)) < diam(@biginterval(b))
-        end
+    c_lo = @round_down(a.lo - b.lo)
+    c_hi = @round_up(a.hi - b.hi)
+
+    c_lo > c_hi && return entireinterval(Interval{T})
+
+    c_lo == T(Inf) && return Interval(prevfloat(c_lo), c_hi)
+    c_hi == -T(Inf) && return Interval(c_lo, nextfloat(c_hi))
+
+    a_lo = @round_down(b.lo + c_lo)
+    a_hi = @round_up(b.hi + c_hi)
+
+    if a_lo ≤ a.lo ≤ a.hi ≤ a_hi
+        (nextfloat(a.hi)<a_hi || prevfloat(a.lo)>a_hi) && return entireinterval(Interval{T})
+        return Interval(c_lo, c_hi)
     end
-    ans && return entireinterval(Interval{T})
 
-    Interval(@round(a.lo - b.lo, a.hi - b.hi))
+    return entireinterval(Interval{T})
 end
 function cancelminus(a::FastInterval, b::FastInterval)
     T = promote_type(eltype(a), eltype(b))
@@ -523,19 +529,25 @@ function cancelminus(a::FastInterval, b::FastInterval)
 
     (isunbounded(a) || isunbounded(b) || isempty(b)) && return entireinterval(FastInterval{T})
 
-    a.lo - b.lo > a.hi - b.hi && return entireinterval(FastInterval{T})
+    diam(a) < diam(b) && return entireinterval(FastInterval{T})
 
-    # The following is needed to avoid finite precision problems
-    ans = false
-    if diam(a) == diam(b)
-        prec = T == Float64 ? 128 : 128+precision(BigFloat)
-        ans = setprecision(prec) do
-            diam(@biginterval(a)) < diam(@biginterval(b))
-        end
+    c_lo = @round_down(a.lo - b.lo)
+    c_hi = @round_up(a.hi - b.hi)
+
+    c_lo > c_hi && return entireinterval(FastInterval{T})
+
+    c_lo == T(Inf) && return FastInterval(prevfloat(c_lo), c_hi)
+    c_hi == -T(Inf) && return FastInterval(c_lo, nextfloat(c_hi))
+
+    a_lo = @round_down(b.lo + c_lo)
+    a_hi = @round_up(b.hi + c_hi)
+
+    if a_lo ≤ a.lo ≤ a.hi ≤ a_hi
+        (nextfloat(a.hi)<a_hi || prevfloat(a.lo)>a_hi) && return entireinterval(FastInterval{T})
+        return FastInterval(c_lo, c_hi)
     end
-    ans && return entireinterval(FastInterval{T})
 
-    FastInterval(@round(a.lo - b.lo, a.hi - b.hi))
+    return entireinterval(FastInterval{T})
 end
 
 """
