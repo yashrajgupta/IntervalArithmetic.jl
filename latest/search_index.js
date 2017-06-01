@@ -297,11 +297,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "api.html#IntervalArithmetic.cancelminus-Tuple{IntervalArithmetic.Interval,IntervalArithmetic.Interval}",
+    "location": "api.html#IntervalArithmetic.cancelminus-Tuple{IntervalArithmetic.Interval{T<:Real},IntervalArithmetic.Interval{T<:Real}}",
     "page": "API",
     "title": "IntervalArithmetic.cancelminus",
     "category": "Method",
-    "text": "cancelminus(a, b)\n\nReturn the unique interval c such that b+c=a.\n\n\n\n"
+    "text": "cancelminus(a, b)\n\nReturn the unique interval c such that b+c=a.\n\nSee Section 12.12.5 of the IEEE-1788 Standard for Interval Arithmetic.\n\n\n\n"
 },
 
 {
