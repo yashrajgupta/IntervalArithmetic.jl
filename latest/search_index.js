@@ -573,7 +573,7 @@ var documenterSearchIndex = {"docs": [
     "page": "API",
     "title": "Base.setdiff",
     "category": "method",
-    "text": "setdiff(x::Interval, y::Interval)\n\nCalculate the set difference x  y, i.e. the set of values that are inside the interval x but not inside y.\n\nReturns an array of intervals. The array may:\n\nbe empty if x ⊆ y;\ncontain a single interval, if y overlaps x\ncontain two intervals, if y is strictly contained within x.\n\n\n\n"
+    "text": "setdiff(x::Interval, y::Interval)\n\nCalculate the set difference x ∖ y, i.e. the set of values that are inside the interval x but not inside y.\n\nReturns an array of intervals. The array may:\n\nbe empty if x ⊆ y;\ncontain a single interval, if y overlaps x\ncontain two intervals, if y is strictly contained within x.\n\n\n\n"
 },
 
 {
@@ -581,7 +581,7 @@ var documenterSearchIndex = {"docs": [
     "page": "API",
     "title": "Base.setdiff",
     "category": "method",
-    "text": "setdiff(A::IntervalBox{N,T}, B::IntervalBox{N,T})\n\nReturns a vector of IntervalBoxes that are in the set difference A  B, i.e. the set of x that are in A but not in B.\n\nAlgorithm: Start from the total overlap (in all directions); expand each direction in turn.\n\n\n\n"
+    "text": "setdiff(A::IntervalBox{N,T}, B::IntervalBox{N,T})\n\nReturns a vector of IntervalBoxes that are in the set difference A ∖ B, i.e. the set of x that are in A but not in B.\n\nAlgorithm: Start from the total overlap (in all directions); expand each direction in turn.\n\n\n\n"
 },
 
 {
