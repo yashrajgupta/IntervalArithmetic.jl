@@ -285,7 +285,7 @@ var documenterSearchIndex = {"docs": [
     "page": "API",
     "title": "IntervalArithmetic.IntervalBox",
     "category": "type",
-    "text": "An IntervalBox is an N-dimensional rectangular box, given by a Cartesian product of N Intervals.\n\n\n\n"
+    "text": "An IntervalBox is an N-dimensional rectangular box, given by a Cartesian product of a vector of N Intervals.\n\n\n\n"
 },
 
 {
