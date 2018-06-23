@@ -433,6 +433,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "api.html#IntervalArithmetic.mid-Tuple{IntervalArithmetic.IntervalBox}",
+    "page": "API",
+    "title": "IntervalArithmetic.mid",
+    "category": "method",
+    "text": "mid(X::IntervalBox, α=0.5)\n\nReturn a vector of the mid of each interval composing the IntervalBox.\n\nSee mid(X::Interval, α=0.5) for more informations.\n\n\n\n"
+},
+
+{
     "location": "api.html#IntervalArithmetic.mid-Union{Tuple{IntervalArithmetic.Interval{T},Any}, Tuple{T}} where T",
     "page": "API",
     "title": "IntervalArithmetic.mid",
@@ -470,6 +478,14 @@ var documenterSearchIndex = {"docs": [
     "title": "IntervalArithmetic.setformat",
     "category": "function",
     "text": "setformat(;kw)\n\nsetformat changes how intervals are displayed using keyword arguments. The following options are available:\n\nformat: interval output format\n:standard: [1, 2]\n:full: Interval(1, 2)\n:midpoint: 1.5 ± 0.5\nsigfigs: number of significant figures to show in standard mode; the default is 6\ndecorations (boolean):  show decorations or not\n\nExample:\n\njulia> setformat(:full, decorations=true)\n\n\n\n"
+},
+
+{
+    "location": "api.html#IntervalArithmetic.Region",
+    "page": "API",
+    "title": "IntervalArithmetic.Region",
+    "category": "constant",
+    "text": "Region{T} = Union{Interval{T}, IntervalBox{T}}\n\n\n\n"
 },
 
 {
