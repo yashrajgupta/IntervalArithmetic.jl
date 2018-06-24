@@ -333,14 +333,6 @@ var documenterSearchIndex = {"docs": [
     "page": "API",
     "title": "IntervalArithmetic.bisect",
     "category": "function",
-    "text": "bisect(X::Interval, α=0.49609375)\n\nSplit the interval X at position α; α=0.5 corresponds to the midpoint. Returns a tuple of the new intervals.\n\n\n\n"
-},
-
-{
-    "location": "api.html#IntervalArithmetic.bisect",
-    "page": "API",
-    "title": "IntervalArithmetic.bisect",
-    "category": "function",
     "text": "bisect(X::IntervalBox, i::Integer, α=0.49609375)\n\nBisect the IntervalBox in side number i.\n\n\n\n"
 },
 
@@ -350,6 +342,14 @@ var documenterSearchIndex = {"docs": [
     "title": "IntervalArithmetic.bisect",
     "category": "function",
     "text": "bisect(X::IntervalBox, α=0.49609375)\n\nBisect the IntervalBox X at position α ∈ [0,1] along its longest side.\n\n\n\n"
+},
+
+{
+    "location": "api.html#IntervalArithmetic.bisect",
+    "page": "API",
+    "title": "IntervalArithmetic.bisect",
+    "category": "function",
+    "text": "bisect(X::Interval, α=0.49609375)\n\nSplit the interval X at position α; α=0.5 corresponds to the midpoint. Returns a tuple of the new intervals.\n\n\n\n"
 },
 
 {
@@ -558,6 +558,14 @@ var documenterSearchIndex = {"docs": [
     "title": "Base.Rounding.setrounding",
     "category": "method",
     "text": "setrounding(Interval, rounding_type::Symbol)\n\nSet the rounding type used for all interval calculations on Julia v0.6 and above. Valid rounding_types are (:tight, :accurate, :slow, :none).\n\n\n\n"
+},
+
+{
+    "location": "api.html#Base.hash-Tuple{IntervalArithmetic.Interval,UInt64}",
+    "page": "API",
+    "title": "Base.hash",
+    "category": "method",
+    "text": "Computes the integer hash code for an Interval using the method for composite types used in AutoHashEquals.jl\n\n\n\n"
 },
 
 {
