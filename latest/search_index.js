@@ -333,14 +333,6 @@ var documenterSearchIndex = {"docs": [
     "page": "API",
     "title": "IntervalArithmetic.bisect",
     "category": "function",
-    "text": "bisect(X::Interval, α=0.49609375)\n\nSplit the interval X at position α; α=0.5 corresponds to the midpoint. Returns a tuple of the new intervals.\n\n\n\n"
-},
-
-{
-    "location": "api.html#IntervalArithmetic.bisect",
-    "page": "API",
-    "title": "IntervalArithmetic.bisect",
-    "category": "function",
     "text": "bisect(X::IntervalBox, i::Integer, α=0.49609375)\n\nBisect the IntervalBox in side number i.\n\n\n\n"
 },
 
@@ -350,6 +342,14 @@ var documenterSearchIndex = {"docs": [
     "title": "IntervalArithmetic.bisect",
     "category": "function",
     "text": "bisect(X::IntervalBox, α=0.49609375)\n\nBisect the IntervalBox X at position α ∈ [0,1] along its longest side.\n\n\n\n"
+},
+
+{
+    "location": "api.html#IntervalArithmetic.bisect",
+    "page": "API",
+    "title": "IntervalArithmetic.bisect",
+    "category": "function",
+    "text": "bisect(X::Interval, α=0.49609375)\n\nSplit the interval X at position α; α=0.5 corresponds to the midpoint. Returns a tuple of the new intervals.\n\n\n\n"
 },
 
 {
@@ -469,7 +469,15 @@ var documenterSearchIndex = {"docs": [
     "page": "API",
     "title": "IntervalArithmetic.mid",
     "category": "method",
-    "text": "mid(a::Interval, α=0.5)\n\nFind the midpoint (or, in general, an intermediate point) at a distance α along the interval a. The default is the true midpoint at α=0.5.\n\nAssumes 0 ≤ α ≤ 1.\n\n\n\n"
+    "text": "mid(a::Interval, α=0.5)\n\nFind an intermediate point at a relative position αin the intervala. The default is the true midpoint atα = 0.5`.\n\nAssumes 0 ≤ α ≤ 1.\n\nWarning: if the parameter α = 0.5 is explicitely set, the behavior differs from the default case if the provided Interval is not finite, since when α is provided mid simply replaces +∞ (respectively -∞) by prevfloat(+∞) (respecively nextfloat(-∞)) for the computation of the intermediate point.\n\n\n\n"
+},
+
+{
+    "location": "api.html#IntervalArithmetic.mid-Union{Tuple{IntervalArithmetic.Interval{T}}, Tuple{T}} where T",
+    "page": "API",
+    "title": "IntervalArithmetic.mid",
+    "category": "method",
+    "text": "mid(a::Interval)\n\nFind the midpoint of interval a.\n\nFor intervals of the form [-∞, x] or [x, +∞] where x is finite, return respectively nextfloat(-∞) and prevfloat(+∞). Note that it differs from the behavior of mid(a, α=0.5).\n\n\n\n"
 },
 
 {
