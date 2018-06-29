@@ -333,7 +333,7 @@ var documenterSearchIndex = {"docs": [
     "page": "API",
     "title": "IntervalArithmetic.bisect",
     "category": "function",
-    "text": "bisect(X::IntervalBox, i::Integer, α=0.49609375)\n\nBisect the IntervalBox in side number i.\n\n\n\n"
+    "text": "bisect(X::IntervalBox, α=0.49609375)\n\nBisect the IntervalBox X at position α ∈ [0,1] along its longest side.\n\n\n\n"
 },
 
 {
@@ -341,7 +341,7 @@ var documenterSearchIndex = {"docs": [
     "page": "API",
     "title": "IntervalArithmetic.bisect",
     "category": "function",
-    "text": "bisect(X::IntervalBox, α=0.49609375)\n\nBisect the IntervalBox X at position α ∈ [0,1] along its longest side.\n\n\n\n"
+    "text": "bisect(X::IntervalBox, i::Integer, α=0.49609375)\n\nBisect the IntervalBox in side number i.\n\n\n\n"
 },
 
 {
