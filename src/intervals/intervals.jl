@@ -11,7 +11,7 @@ else
     const validity_check = false
 end
 
-abstract type AbstractInterval{T} <: Real end
+abstract type AbstractInterval{T} end
 
 struct Interval{T<:Real} <: AbstractInterval{T}
     lo :: T
